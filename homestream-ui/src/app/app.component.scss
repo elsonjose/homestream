@@ -1,0 +1,36 @@
+.content {
+  padding: 1rem;
+  mat-card {
+    border-radius: 1rem;
+    padding-bottom: 0;
+    padding-top: 0;
+    position: relative;
+    img {
+      object-fit: cover;
+      border-radius: 1rem;
+      margin-bottom: 0;
+    }
+    mat-card-header {
+      font-weight: bold;
+      font-size: 1.2rem;
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      background-image: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0));
+      height: 300px;
+      border-radius: 1rem;
+
+      mat-card-title {
+        margin-top: 1rem;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        color: white;
+      }
+    }
+    ::ng-deep .mat-card-header-text {
+      min-width: 0;
+    }
+  }
+}

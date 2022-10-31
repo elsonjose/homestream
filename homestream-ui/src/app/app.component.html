@@ -1,0 +1,23 @@
+<mat-toolbar color="primary">
+  <span>{{ appName }}</span>
+</mat-toolbar>
+
+<div class="content">
+  <div fxLayout="row wrap" fxLayoutGap="1rem grid">
+    <div
+      fxFlex="25%"
+      fxFlex.sm="33%"
+      fxFlex.xs="100%"
+      *ngFor="let movie of movies"
+    >
+      <mat-card class="mat-elevation-z4">
+        <mat-card-header>
+          <mat-card-title title="{{ movie.title }}">
+            {{ movie.title | titlecase }}
+          </mat-card-title>
+        </mat-card-header>
+        <img height="300" mat-card-image src="{{ movie.thumbPath }}" />
+      </mat-card>
+    </div>
+  </div>
+</div>
