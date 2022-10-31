@@ -1,0 +1,1 @@
+export const MOVIE_DESC_TEXT_LENGTH = 128

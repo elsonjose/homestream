@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { appName } from 'src/main';
+import { MOVIE_DESC_TEXT_LENGTH } from './common/constants';
 import { Movie } from './models/movie';
 
 @Component({
@@ -11,6 +12,8 @@ export class AppComponent {
   title = 'homestream-ui';
 
   appName = appName;
+  DESC_TEXT_LENGTH = MOVIE_DESC_TEXT_LENGTH
+  sampleDes = "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Voluptas,exercitationem dolor quidem inventore quos soluta ratione iusto  corporis sit vero earum? Ratione ipsam explicabo vitae odit dolores sit non culpa."
 
   movies: Movie[] = [
     {
