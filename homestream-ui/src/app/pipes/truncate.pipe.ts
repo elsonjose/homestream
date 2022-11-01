@@ -10,7 +10,7 @@ export class TruncatePipe implements PipeTransform {
       length = 3;
     }
     if (value.length > args[0] - 3) {
-      return value.slice(0, args[0] - 3) + '...';
+      return value.slice(0, args[0] - 3).trim() + '...';
     }
     return value;
   }

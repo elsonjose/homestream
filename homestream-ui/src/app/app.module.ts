@@ -11,9 +11,12 @@ import { MatButtonModule } from '@angular/material/button';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import {MatChipsModule} from '@angular/material/chips';
 import { TruncatePipe } from './pipes/truncate.pipe';
+import { AddFolderComponent } from './components/add-folder/add-folder.component';
+import { HomeComponent } from './components/home/home.component';
+import { ToolbarComponent } from './components/toolbar/toolbar.component';
 
 @NgModule({
-  declarations: [AppComponent, TruncatePipe],
+  declarations: [AppComponent, TruncatePipe, AddFolderComponent, HomeComponent, ToolbarComponent],
   imports: [
     BrowserModule,
     AppRoutingModule,

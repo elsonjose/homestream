@@ -1,0 +1,11 @@
+<mat-toolbar color="primary">
+  <span>{{ appName }}</span>
+  <button
+    mat-raised-button
+    color="secondary"
+    *ngFor="let item of menu"
+    (click)="onMenuItemClicked(item.Action)"
+  >
+    {{ item.Text | titlecase }}
+  </button>
+</mat-toolbar>

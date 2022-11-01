@@ -4,4 +4,5 @@ export interface Movie {
   filePath: string;
   thumbPath: string;
   gifPath: string;
+  tags: string[]
 }
