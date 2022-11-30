@@ -1,0 +1,5 @@
+package constants
+
+const KEY_PORT string = "PORT"
+const MONGO_DB_CONNECTION_STRING string = "MONGO_DB_CONNECTION_STRING"
+const DATABASE_TIMEOUT string = "DATABASE_TIMEOUT"
