@@ -14,19 +14,15 @@ import { FlexLayoutModule } from '@angular/flex-layout';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatDialogModule } from '@angular/material/dialog';
 import { TruncatePipe } from './pipes/truncate.pipe';
-import { AddFolderComponent } from './components/add-folder/add-folder.component';
 import { HomeComponent } from './components/home/home.component';
 import { ToolbarComponent } from './components/toolbar/toolbar.component';
-import { AddFolderDialogComponent } from './components/add-folder-dialog/add-folder-dialog.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     TruncatePipe,
-    AddFolderComponent,
     HomeComponent,
     ToolbarComponent,
-    AddFolderDialogComponent,
   ],
   imports: [
     BrowserModule,

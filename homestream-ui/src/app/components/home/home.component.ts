@@ -16,8 +16,8 @@ export class HomeComponent implements OnInit {
 
   menu: Menu[] = [
     {
-      Text: 'folders',
-      Action: MenuAction.OPEN_FOLDER,
+      Text: 'Scan Device',
+      Action: MenuAction.SCAN_DEVICE,
     },
   ];
 
@@ -95,8 +95,8 @@ export class HomeComponent implements OnInit {
 
   onMenuAction(actionId: number) {
     switch (actionId) {
-      case MenuAction.OPEN_FOLDER: {
-        this.router.navigate(['/folder']);
+      case MenuAction.SCAN_DEVICE: {
+        this.router.navigate(['/movies']);
         return;
       }
     }
