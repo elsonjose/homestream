@@ -1,1 +1,23 @@
-<p>add-folder works!</p>
+<home-stream-toolbar [menu]="menu" (menuEventEmitter)="onMenuAction($event)"> </home-stream-toolbar>
+
+<div class="dir-wrapper">
+  <table border="border">
+    <thead>
+      <tr>
+        <th *ngFor="let h of tableHeaders">{{ h | truncate: TABLE_HEADER_LENGTH  }}</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr *ngFor="let dir of directories">
+            <td>{{dir.path | truncate: TABLE_CONTENT_LENGTH}}</td>
+            <td>
+                <div class="dir-actions-wrapper">
+                    <mat-icon matTooltip="view movies" >visibility</mat-icon>                 
+                    <mat-icon matTooltip="refresh" >refresh</mat-icon>                 
+                    <mat-icon matTooltip="delete directory" >delete_outline</mat-icon>                 
+                </div>
+            </td>
+        </tr>
+    </tbody>
+  </table>
+</div>
