@@ -1,7 +1,7 @@
 package handler
 
 import (
-	"homestream-api/helper/dbImpl"
+	"homestream-api/repository"
 	"homestream-api/model"
 	"net/http"
 
@@ -11,7 +11,7 @@ import (
 
 func GetAllDirectories(c *gin.Context) {
 
-	mDb := dbImpl.GetMongoDbService()
+	mDb := repository.GetMongoDbService()
 	defer mDb.Close()
 
 	directoryEntities, err := mDb.GetDirectoriesCollection().Find(mDb.Context, bson.D{{}})

@@ -1,7 +1,7 @@
 package handler
 
 import (
-	"homestream-api/helper/dbImpl"
+	"homestream-api/repository"
 	"homestream-api/model"
 	"log"
 	"net/http"
@@ -22,7 +22,7 @@ func AddDirectory(c *gin.Context) {
 		return
 	}
 
-	mDb := dbImpl.GetMongoDbService()
+	mDb := repository.GetMongoDbService()
 	defer mDb.Close()
 
 	findFilter := bson.M{

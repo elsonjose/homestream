@@ -1,10 +1,10 @@
 package main
 
 import (
-	"homestream-api/common/constants"
-	"homestream-api/common/helper"
+	"homestream-api/constants"
+	"homestream-api/helper"
 	"homestream-api/controller"
-	"homestream-api/helper/dbImpl"
+	"homestream-api/repository"
 	"log"
 
 	"github.com/gin-gonic/gin"
@@ -40,10 +40,10 @@ func main() {
 		movieRouteGroup.DELETE("/:id", controller.DeleteMovie)
 	}
 
-	mDb := dbImpl.GetMongoDbService()
-	defer mDb.Close()
+	db := repository.GetMongoDbService()
+	defer db.Close()
 
-	mDb.InitializeDatabasesAndCollections()
+	db.InitializeDatabasesAndCollections()
 
 	r.Run(":" + helper.GetStringConfiguration(constants.KEY_PORT, constants.DEFAULT_PORT))
 }

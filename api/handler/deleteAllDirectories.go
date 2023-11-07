@@ -1,7 +1,7 @@
 package handler
 
 import (
-	"homestream-api/helper/dbImpl"
+	"homestream-api/repository"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -10,7 +10,7 @@ import (
 
 func DeleteAllDirectories(c *gin.Context) {
 
-	mDb := dbImpl.GetMongoDbService()
+	mDb := repository.GetMongoDbService()
 	defer mDb.Close()
 
 	_, err := mDb.GetDirectoriesCollection().DeleteMany(mDb.Context, bson.D{{}})

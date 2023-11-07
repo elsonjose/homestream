@@ -1,9 +1,9 @@
-package dbImpl
+package repository
 
 import (
 	"context"
-	"homestream-api/common/constants"
-	"homestream-api/common/helper"
+	"homestream-api/constants"
+	"homestream-api/helper"
 	"log"
 	"os"
 	"time"

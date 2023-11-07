@@ -1,7 +1,7 @@
 package controller
 
 import (
-	handler "homestream-api/handler/directory"
+	handler "homestream-api/handler"
 
 	"github.com/gin-gonic/gin"
 )
