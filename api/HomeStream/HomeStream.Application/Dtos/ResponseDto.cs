@@ -1,4 +1,4 @@
-﻿namespace HomeStream.Application.Dto;
+﻿namespace HomeStream.Application.Dtos;
 
 public class ResponseDto<T>(T data)
 {

@@ -12,7 +12,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\HomeStream.Domain\HomeStream.Domain.csproj" />
-    <ProjectReference Include="..\HomeStream.Infrastructure\HomeStream.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

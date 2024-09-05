@@ -1,4 +1,4 @@
-using HomeStream.Application.Request;
+using HomeStream.Application.Requests;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HomeStream.Api.Controllers.v1;

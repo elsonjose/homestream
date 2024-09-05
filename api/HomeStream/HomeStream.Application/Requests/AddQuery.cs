@@ -1,7 +1,7 @@
-﻿using HomeStream.Application.Dto;
+﻿using HomeStream.Application.Dtos;
 using MediatR;
 
-namespace HomeStream.Application.Request;
+namespace HomeStream.Application.Requests;
 
 public class AddQuery : IRequest<ResponseDto<int>>
 {
