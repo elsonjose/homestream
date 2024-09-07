@@ -1,6 +1,6 @@
 ﻿using HomeStream.Application.Models;
 
-namespace HomeStream.Application.Abstractions;
+namespace HomeStream.Application.Abstractions.Services;
 
 /// <summary>
 /// Defines the interface for file scanner.

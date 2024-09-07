@@ -1,4 +1,5 @@
 using HomeStream.Application;
+using HomeStream.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,9 +11,12 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddApplicationServices();
-builder.Services.AddInfrastructureServices();
+builder.Services.AddInfrastructureServices(builder.Configuration);
 
 var app = builder.Build();
+
+// Use the infrastructure related services.
+app.UseInfrastureServices();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

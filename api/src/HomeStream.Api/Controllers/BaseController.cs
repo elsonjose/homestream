@@ -1,5 +1,4 @@
-﻿using HomeStream.Application.Request;
-using MediatR;
+﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HomeStream.Api.Controllers;

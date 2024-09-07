@@ -1,4 +1,4 @@
-﻿using HomeStream.Application.Abstractions;
+﻿using HomeStream.Application.Abstractions.Services;
 using HomeStream.Application.Common;
 using HomeStream.Application.Models;
 using Microsoft.Extensions.Logging;
