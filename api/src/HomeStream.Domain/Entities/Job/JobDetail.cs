@@ -8,19 +8,23 @@ public class JobDetail
 
     public string Name { get; set; }
 
+    public string JobTypeName { get; set; }
+
+    public string JobPayloadTypeName { get; set; }
+
     public string Payload { get; set; }
 
     public double Progress { get; set; }
 
     public string ExceptionMessage { get; set; }
 
-    public string StrackTrace { get; set; }
+    public string StackTrace { get; set; }
 
     public long CreatedOn { get; set; }
 
-    public long StartedOn { get; set; }
+    public long? StartedOn { get; set; }
 
-    public long CompletedOn { get; set; }
+    public long? CompletedOn { get; set; }
 
     public JobStatus Status { get; set; }
 
