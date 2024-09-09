@@ -8,6 +8,7 @@ public class HomeStreamEnums
         InProgress,
         Failed,
         Completed,
+        CancellationRequested,
         Cancelled
     }
 }

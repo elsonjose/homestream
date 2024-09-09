@@ -1,5 +1,5 @@
 ﻿using HomeStream.Application.Abstractions.Persistence;
-using HomeStream.Application.Abstractions.Services;
+using HomeStream.Domain.Abstractions.Services;
 using HomeStream.Infrastructure.HostServices;
 using HomeStream.Infrastructure.Implementations;
 using HomeStream.Infrastructure.Persistence.Implementation;

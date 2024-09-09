@@ -14,6 +14,8 @@ public class JobDetail
 
     public string Payload { get; set; }
 
+    public bool IsCancellationRequested { get; set; }
+
     public double Progress { get; set; }
 
     public string ExceptionMessage { get; set; }
@@ -25,6 +27,8 @@ public class JobDetail
     public long? StartedOn { get; set; }
 
     public long? CompletedOn { get; set; }
+
+    public long? CancellationRequestOn { get; set; }
 
     public JobStatus Status { get; set; }
 

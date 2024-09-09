@@ -1,7 +1,7 @@
-﻿using HomeStream.Application.Abstractions.Model;
-using HomeStream.Application.Abstractions.Persistence;
-using HomeStream.Application.Abstractions.Services;
+﻿using HomeStream.Application.Abstractions.Persistence;
 using HomeStream.Application.Common;
+using HomeStream.Domain.Abstractions.Model;
+using HomeStream.Domain.Abstractions.Services;
 using HomeStream.Domain.Entities;
 using HomeStream.Infrastructure.Persistence.Implementation;
 using Microsoft.EntityFrameworkCore;
@@ -49,7 +49,8 @@ public class JobExecutionService : IJobExecutionService
 
     public async Task StartJobExecution(CancellationToken cancellationToken)
     {
-        var homestreamDbContext = _serviceProvider.CreateScope().ServiceProvider.GetRequiredService<IHomeStreamDbContext>();
+        IHomeStreamDbContext homestreamDbContext = GetNewDbContextInstance();
+
         var queuedJobs = await homestreamDbContext.JobDetails
             .AsQueryable()
             .Where(job => job.Status == JobStatus.Queued && !_activeJobTracker.Contains(job.Id))
@@ -59,71 +60,75 @@ public class JobExecutionService : IJobExecutionService
 
         foreach (var queuedJob in queuedJobs)
         {
-            try
-            {
-                Type payloadType = AppDomain.CurrentDomain.GetAssemblies()
-                        .SelectMany(a => a.GetTypes())
-                        .First(t => t.Name == queuedJob.JobPayloadTypeName);
-
-                IJobPayload? payload = JsonConvert.DeserializeObject(queuedJob.Payload, payloadType) as IJobPayload;
-
-                Type jobType = AppDomain.CurrentDomain.GetAssemblies()
+            Type jobType = AppDomain.CurrentDomain.GetAssemblies()
                         .SelectMany(a => a.GetTypes())
                         .First(t => t.Name == queuedJob.JobTypeName);
 
-                IJob? job = _serviceProvider.CreateScope().ServiceProvider.GetService(jobType) as IJob;
+            IJob job = (IJob)_serviceProvider.CreateScope().ServiceProvider.GetRequiredService(jobType);
 
-                _activeJobTracker.Add(queuedJob.Id, cancellationToken);
+            _activeJobTracker.Add(queuedJob.Id, cancellationToken);
 
-                _ = Task.Run(async () =>
-                {
-                    _ = await job.ExecuteJob(payload, queuedJob.Id);
-                }, cancellationToken);
-
-            }
-            catch (Exception ex)
+            _ = Task.Run(async () =>
             {
-
-            }
-            finally
-            {
-
-            }
+                _ = await job.ExecuteJob(queuedJob.Payload, queuedJob.Id);
+            }, cancellationToken);
         }
     }
 
     public async Task<bool> CancelJob(long jobId, CancellationToken cancellationToken)
     {
-        var homestreamDbContext = (HomeStreamDbContext)_serviceProvider.CreateScope().ServiceProvider.GetRequiredService<IHomeStreamDbContext>();
-        var queuedJob = await homestreamDbContext.JobDetails
-            .AsQueryable()
-            .FirstOrDefaultAsync(j => j.Id == jobId, cancellationToken);
+        var homestreamDbContext = GetNewDbContextInstance();
+        JobDetail queuedJob = await GetQueuedJobDetails(jobId, homestreamDbContext, cancellationToken);
 
         if (_activeJobTracker.Contains(jobId))
         {
-            Type payloadType = AppDomain.CurrentDomain.GetAssemblies()
-                        .SelectMany(a => a.GetTypes())
-                        .First(t => t.Name == queuedJob.JobPayloadTypeName);
-            IJobPayload? payload = JsonConvert.DeserializeObject(queuedJob.Payload, payloadType) as IJobPayload;
+            queuedJob.IsCancellationRequested = true;
+            queuedJob.Status = JobStatus.CancellationRequested;
+            queuedJob.CancellationRequestOn = HomeStreamDateTime.EpochNow;
+            homestreamDbContext.Modify(queuedJob);
+            await homestreamDbContext.PersistChangesAsync(cancellationToken);
 
-            payload.CancellationTokenSource.Cancel();
-            _logger.LogInformation("Job: {jobName} with id: {jobId} cancelled", queuedJob.Name, jobId);
-            //queuedJob.Status = JobStatus.Cancelled;
-            //homestreamDbContext.Update(queuedJob);
-            //await homestreamDbContext.SaveChangesAsync(cancellationToken);
+            _logger.LogInformation(
+                "Cancellation required for job {jobName} with id {jobId} at {datetime}", queuedJob.Name, jobId, queuedJob.CancellationRequestOn.Value.ToDateTimeString());
+
+            // TODO: Remove item from blocking collection.
 
             return true;
+        }
+        else
+        {
+            _logger.LogInformation("Failed to cancel job with id {jobId}", jobId);
         }
         return false;
     }
 
-    public Task UpdateJobProgress(long jobId, double progress)
+    public async Task UpdateJobProgress(long jobId, double progress, CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        var homestreamDbContext = GetNewDbContextInstance();
+        JobDetail queuedJob = await GetQueuedJobDetails(jobId, homestreamDbContext, cancellationToken);
+        queuedJob.Progress = progress;
+        homestreamDbContext.Modify(queuedJob);
+        await homestreamDbContext.PersistChangesAsync(cancellationToken);
     }
 
-    public Task UpdateJobStatus(long jobId, JobStatus updatedStatus)
+    public async Task UpdateJobStatus(long jobId, JobStatus updatedStatus, CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        var homestreamDbContext = GetNewDbContextInstance();
+        JobDetail queuedJob = await GetQueuedJobDetails(jobId, homestreamDbContext, cancellationToken);
+        queuedJob.Status = updatedStatus;
+        homestreamDbContext.Modify(queuedJob);
+        await homestreamDbContext.PersistChangesAsync(cancellationToken);
+    }
+    
+    private IHomeStreamDbContext GetNewDbContextInstance()
+    {
+        return _serviceProvider.CreateScope().ServiceProvider.GetRequiredService<IHomeStreamDbContext>();
+    }
+
+    private static async Task<JobDetail> GetQueuedJobDetails(long jobId, IHomeStreamDbContext homestreamDbContext, CancellationToken cancellationToken)
+    {
+        return await homestreamDbContext.JobDetails
+                    .AsQueryable()
+                    .FirstAsync(j => j.Id == jobId, cancellationToken);
     }
 }

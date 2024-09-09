@@ -1,5 +1,5 @@
-﻿using HomeStream.Application.Abstractions.Services;
-using HomeStream.Application.Common;
+﻿using HomeStream.Application.Common;
+using HomeStream.Domain.Abstractions.Services;
 using Microsoft.Extensions.Hosting;
 using System.Collections.Concurrent;
 

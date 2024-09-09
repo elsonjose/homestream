@@ -1,5 +1,5 @@
-﻿using HomeStream.Application.Abstractions.Model;
-using HomeStream.Application.Abstractions.Services;
+﻿using HomeStream.Domain.Abstractions.Model;
+using HomeStream.Domain.Abstractions.Services;
 using Microsoft.Extensions.Logging;
 
 namespace HomeStream.Application.Implementations.Services;
@@ -19,7 +19,7 @@ public class FileScannerService : IJob
         _logger = logger;
     }
 
-    public async Task<bool> ExecuteJob(IJobPayload payload, long jobId)
+    public async Task<bool> ExecuteJob(string serializedPayload, long jobId)
     {
 
         //var videoFiles = Directory.GetFiles(directoryPath, "*.*", SearchOption.AllDirectories)
