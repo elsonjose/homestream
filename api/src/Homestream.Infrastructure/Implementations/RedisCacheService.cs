@@ -58,6 +58,14 @@ public class RedisCacheService : ICacheService
         return await _redisDb.StringSetAsync(key, serializedCache, GetExpiryInSeconds(expiryInSeconds));
     }
 
+    /// <inheritdoc/>
+    public async Task<bool> IsKeyInCache(string key)
+    {
+        var keyExits = await _redisDb.KeyExistsAsync(key);
+        _logger.LogInformation("Check if key exists in cache: {key} with result: {result}", key, keyExits);
+        return keyExits;
+    }
+
     /// <summary>
     /// Gets the expiry in seconds.
     /// </summary>

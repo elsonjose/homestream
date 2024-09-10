@@ -2,5 +2,5 @@
 
 public interface IJob
 {
-    public Task<bool> ExecuteJob(string serializedPayload, long jobId);
+    public Task ExecuteJob(string serializedPayload, long jobId);
 }

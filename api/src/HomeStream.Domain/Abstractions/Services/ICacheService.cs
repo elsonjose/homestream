@@ -38,4 +38,11 @@ public interface ICacheService
     /// <param name="expiryInSeconds">The expiration in seconds</param>
     /// <returns>True if cache is set, else false.</returns>
     public Task<bool> ReloadCachedItemAsync<ICacheType>(string key, ICacheType newValue, int? expiryInSeconds = null);
+
+    /// <summary>
+    /// Checks if key is in cache.
+    /// </summary>
+    /// <param name="key">The cache key</param>
+    /// <returns>True if key in cache, else false.</returns>
+    public Task<bool> IsKeyInCache(string key);
 }
