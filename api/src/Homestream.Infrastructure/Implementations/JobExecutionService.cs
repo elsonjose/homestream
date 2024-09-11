@@ -8,7 +8,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
-using System.Collections.Concurrent;
 using static HomeStream.Domain.Core.HomeStreamEnums;
 
 namespace HomeStream.Infrastructure.Implementations;
@@ -17,13 +16,13 @@ public class JobExecutionService : IJobExecutionService
 {
     private readonly IServiceProvider _serviceProvider;
     private readonly ILogger<JobExecutionService> _logger;
-    private readonly BlockingCollection<long> _activeJobTracker;
+
+    // TODO: Move this to a configurable setting.
     private readonly int simultaneousJobCount = 10;
 
     public JobExecutionService(IServiceProvider serviceProvider, ILogger<JobExecutionService> logger)
     {
         _serviceProvider = serviceProvider;
-        _activeJobTracker = [];
         _logger = logger;
     }
 
@@ -53,7 +52,7 @@ public class JobExecutionService : IJobExecutionService
 
         var queuedJobs = await homestreamDbContext.JobDetails
             .AsQueryable()
-            .Where(job => job.Status == JobStatus.Queued && !_activeJobTracker.Contains(job.Id))
+            .Where(job => job.Status == JobStatus.Queued)
             .OrderBy(job => job.CreatedOn)
             .Take(simultaneousJobCount)
             .ToListAsync(cancellationToken);
@@ -66,23 +65,23 @@ public class JobExecutionService : IJobExecutionService
 
             IJob job = (IJob)_serviceProvider.CreateScope().ServiceProvider.GetRequiredService(jobType);
 
-            _activeJobTracker.Add(queuedJob.Id, cancellationToken);
-
             _ = Task.Run(async () =>
             {
-                _ = await job.ExecuteJob(queuedJob.Payload, queuedJob.Id);
+                await job.ExecuteJob(queuedJob.Payload, queuedJob.Id);
             }, cancellationToken);
         }
     }
 
     public async Task<bool> CancelJob(long jobId, CancellationToken cancellationToken)
     {
+        var redisCacheInstance = _serviceProvider.CreateScope().ServiceProvider.GetRequiredService<ICacheService>();
         var homestreamDbContext = GetNewDbContextInstance();
         JobDetail queuedJob = await GetQueuedJobDetails(jobId, homestreamDbContext, cancellationToken);
 
-        if (_activeJobTracker.Contains(jobId))
+        bool isJobInRedisCache = await redisCacheInstance.IsKeyInCache(HomestreamUtil.GetRedisNameForJob(jobId));
+
+        if (isJobInRedisCache)
         {
-            queuedJob.IsCancellationRequested = true;
             queuedJob.Status = JobStatus.CancellationRequested;
             queuedJob.CancellationRequestOn = HomeStreamDateTime.EpochNow;
             homestreamDbContext.Modify(queuedJob);
@@ -119,7 +118,7 @@ public class JobExecutionService : IJobExecutionService
         homestreamDbContext.Modify(queuedJob);
         await homestreamDbContext.PersistChangesAsync(cancellationToken);
     }
-    
+
     private IHomeStreamDbContext GetNewDbContextInstance()
     {
         return _serviceProvider.CreateScope().ServiceProvider.GetRequiredService<IHomeStreamDbContext>();
@@ -130,5 +129,17 @@ public class JobExecutionService : IJobExecutionService
         return await homestreamDbContext.JobDetails
                     .AsQueryable()
                     .FirstAsync(j => j.Id == jobId, cancellationToken);
+    }
+
+    public async Task<bool> RequeueJob(long jobId, CancellationToken cancellationToken)
+    {
+        var dbContext = GetNewDbContextInstance();
+        var jobDetails = await GetQueuedJobDetails(jobId, dbContext, cancellationToken);
+        if (jobDetails.Status == JobStatus.CancellationRequested)
+        {
+            await UpdateJobStatus(jobId, JobStatus.Queued, cancellationToken);
+            return true;
+        }
+        throw new Exception("Only cancelled jobs can be requeued");
     }
 }

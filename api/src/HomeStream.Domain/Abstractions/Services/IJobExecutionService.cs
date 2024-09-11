@@ -14,4 +14,5 @@ public interface IJobExecutionService
     public Task UpdateJobStatus(long jobId, JobStatus updatedStatus, CancellationToken cancellationToken);
 
     public Task<bool> CancelJob(long jobId, CancellationToken cancellationToken);
+    public Task<bool> RequeueJob(long jobId, CancellationToken cancellationToken);
 }

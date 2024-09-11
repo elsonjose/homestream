@@ -30,7 +30,7 @@ public abstract class AbstractJob : IJob
 
     public async Task ExecuteJob(string serializedPayload, long jobId)
     {
-        string redisKeyForJob = string.Format(HomeStreamConstants.RedisCacheKeyForJob, jobId);
+        string redisKeyForJob = HomestreamUtil.GetRedisNameForJob(jobId);
         var isKeyInCache = await _redisCacheService.IsKeyInCache(redisKeyForJob);
 
         if (!isKeyInCache)

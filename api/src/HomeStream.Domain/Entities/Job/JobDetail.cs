@@ -14,8 +14,6 @@ public class JobDetail
 
     public string Payload { get; set; }
 
-    public bool IsCancellationRequested { get; set; }
-
     public double Progress { get; set; }
 
     public string ExceptionMessage { get; set; }

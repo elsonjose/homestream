@@ -19,7 +19,7 @@ public class FileScannerService : IJob
         _logger = logger;
     }
 
-    public async Task<bool> ExecuteJob(string serializedPayload, long jobId)
+    public async Task ExecuteJob(string serializedPayload, long jobId)
     {
 
         //var videoFiles = Directory.GetFiles(directoryPath, "*.*", SearchOption.AllDirectories)
@@ -28,6 +28,5 @@ public class FileScannerService : IJob
         //                          .ToList();
         _logger.LogInformation("\nInside FileScannerService ExecuteJob with jobId = {jobId}\n", jobId);
         await Task.Delay(10000);
-        return true;
     }
 }

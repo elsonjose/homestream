@@ -12,7 +12,6 @@ public class JobDetailEntityTypeConfiguration : IEntityTypeConfiguration<JobDeta
         builder.Property(x => x.Id).ValueGeneratedOnAdd();
         builder.Property(x => x.Status).HasDefaultValue(JobStatus.Queued);
         builder.Property(x => x.Progress).HasDefaultValue(0);
-        builder.Property(x => x.IsCancellationRequested).HasDefaultValue(false);
         builder.Property(x => x.ExceptionMessage).HasDefaultValue(string.Empty);
         builder.Property(x => x.StackTrace).HasDefaultValue(string.Empty);
     }
